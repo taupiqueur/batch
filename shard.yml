@@ -1,0 +1,14 @@
+name: batch
+version: 0.1.0
+
+description: A tool for batch processing using your favorite text editor.
+
+authors: ["Mathieu Ablasou <taupiqueur.kanto@gmail.com>"]
+
+crystal: 1.3.0
+
+license: MIT
+
+targets:
+  batch:
+    main: src/main.cr
