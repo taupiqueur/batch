@@ -115,7 +115,7 @@ end
 pick_items = Set(String).new
 map_items = Set(Tuple(String, String)).new
 drop_items = Set(String).new
-grouped_items = input_items.zip(output_items).group_by do |input, output|
+input_items.zip(output_items).each do |input, output|
   if input == output
     pick_items << input
   elsif output.empty?
