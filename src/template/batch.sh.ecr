@@ -10,7 +10,7 @@ pick() {
   <%= pick_command.quote %> "$1"
 <%- end -%>
 }
-<%- pick_items.each do |input| -%>
+<%- pick_set.each do |input| -%>
   <%-= Process.quote({"pick", input}) %>
 <%- end -%>
 <%- end -%>
@@ -24,7 +24,7 @@ map() {
   <%= map_command.quote %> "$1" "$2"
 <%- end -%>
 }
-<%- map_items.each do |input, output| -%>
+<%- map_set.each do |input, output| -%>
   <%-= Process.quote({"map", input, output}) %>
 <%- end -%>
 <%- end -%>
@@ -38,7 +38,7 @@ drop() {
   <%= drop_command.quote %> "$1"
 <%- end -%>
 }
-<%- drop_items.each do |input| -%>
+<%- drop_set.each do |input| -%>
   <%-= Process.quote({"drop", input}) %>
 <%- end -%>
 <%- end -%>

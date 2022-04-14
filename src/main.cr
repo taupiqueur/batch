@@ -112,16 +112,16 @@ if input_items.size != output_items.size
 end
 
 # Group changes.
-pick_items = Set(String).new
-map_items = Set(Tuple(String, String)).new
-drop_items = Set(String).new
+pick_set = Set(String).new
+map_set = Set(Tuple(String, String)).new
+drop_set = Set(String).new
 input_items.zip(output_items).each do |input, output|
   if input == output
-    pick_items << input
+    pick_set << input
   elsif output.empty?
-    drop_items << input
+    drop_set << input
   else
-    map_items << {input, output}
+    map_set << {input, output}
   end
 end
 
