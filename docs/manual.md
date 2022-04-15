@@ -44,6 +44,8 @@ Silver Chariot.png
 The Fool.png
 ```
 
+You can also create these files with the `batch -E -p touch` command.
+
 After you edit and save the file, it will generate a shell script
 which does the specified actions according to the changes you did in the file.
 
