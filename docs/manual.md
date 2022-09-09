@@ -123,13 +123,15 @@ This command allows you to automatically create the destination directory when r
 
 Depending on my situation here are the tools I use:
 
-- I use [Kakoune] to edit items and [tr] / [iconv] for pre-editing.
+- I use [Helix] to edit items and [tr] / [iconv] for pre-editing.
 - I use [fd] to find entries.
+- I use [xplr] to select files.
 
-[Kakoune]: https://kakoune.org
+[Helix]: https://helix-editor.com
 [tr]: https://man.openbsd.org/tr
 [iconv]: https://manned.org/iconv
 [fd]: https://github.com/sharkdp/fd
+[xplr]: https://xplr.dev
 
 Since batch does not try to load config files from a specific folder at startup,
 the best way to emulate this is by creating an alias in your shell profile.
@@ -150,6 +152,11 @@ amap() {
 # interactive mv
 imv() {
   imap -p : -M 'mkdir -vp -- "$(dirname -- "$2")" && mv -vi -- "$1" "$2"' -d 'rm -vi --' "$@"
+}
+
+# graphical mv
+xmv() {
+  xplr | imv "$@"
 }
 ```
 
