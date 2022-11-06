@@ -85,14 +85,14 @@ if input_items.empty?
   abort "ERROR: Nothing to do."
 end
 
-# Create the initial input for piping to external filters.
+# Create the initial input for piping items through external filters.
 editor_input = IO::Memory.new
 input_items.join(editor_input) do |item, io|
   io.puts item
 end
 editor_input.rewind
 
-# Pipe items to external filters for pre-editing.
+# Pipe items through external filters for pre-editing.
 editor_output = filter_commands.reduce(editor_input) do |input, filter|
   Process.new(filter.command, filter.args, input: input, output: :pipe).output
 rescue exception
