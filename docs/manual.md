@@ -123,15 +123,15 @@ This command allows you to automatically create the destination directory when r
 
 Depending on my situation here are the tools I use:
 
-- I use [Helix] to edit items and [tr] / [iconv] for pre-editing.
+- I use [Kakoune] to edit items and [tr] / [iconv] for pre-editing.
 - I use [fd] to find entries.
-- I use [xplr] to select files.
+- I use [nnn] to select files.
 
-[Helix]: https://helix-editor.com
+[Kakoune]: https://kakoune.org
 [tr]: https://man.openbsd.org/tr
 [iconv]: https://manned.org/iconv
 [fd]: https://github.com/sharkdp/fd
-[xplr]: https://xplr.dev
+[nnn]: https://github.com/jarun/nnn
 
 Since batch does not try to load config files from a specific folder at startup,
 the best way to emulate this is by creating an alias in your shell profile.
@@ -141,7 +141,7 @@ Here is my personal configuration:
 ``` sh
 # interactive map
 imap() {
-  batch -f 'iconv -f UTF-8 -t ASCII//TRANSLIT//IGNORE' -f 'tr [:upper:] [:lower:]' -f "tr -s \\'[:blank:] -" -f 'tr -d ?!,' "$@"
+  batch -e 'kak -n' -f 'iconv -f UTF-8 -t ASCII//TRANSLIT//IGNORE' -f 'tr [:upper:] [:lower:]' -f "tr -s \\'[:blank:] -" -f 'tr -d ?!,' "$@"
 }
 
 # auto map
@@ -156,7 +156,7 @@ imv() {
 
 # graphical mv
 xmv() {
-  xplr | imv "$@"
+  nnn -p - | imv "$@"
 }
 ```
 
