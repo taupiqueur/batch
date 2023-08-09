@@ -91,6 +91,18 @@ drop 'The Fool.png'
 This shell script is opened in an editor for you to review.
 After you close it, it will be executed.
 
+### Editor configuration
+
+By default, batch uses whatever you’ve set as your default text editor via one of the `VISUAL` or `EDITOR` environment variables, or else falls back to the vi editor to process items.
+
+To change that default to something else, you can use the `--editor` option:
+
+``` sh
+batch -e vim
+```
+
+Now, no matter what is set as your default shell editor, batch will fire up Vim to process items.
+
 ### Advanced usage
 
 batch lets you apply external filters—such as [tr], [sed] or [awk][gawk]—before invoking the editor:
@@ -141,7 +153,7 @@ Here is my personal configuration:
 ``` sh
 # interactive map
 imap() {
-  batch -e 'kak -n' -f 'iconv -f UTF-8 -t ASCII//TRANSLIT//IGNORE' -f 'tr [:upper:] [:lower:]' -f "tr -s \\'[:blank:] -" -f 'tr -d ?!,' "$@"
+  batch -e kak -f 'iconv -f UTF-8 -t ASCII//TRANSLIT//IGNORE' -f 'tr [:upper:] [:lower:]' -f "tr -s \\'[:blank:] -" -f 'tr -d ?!,' "$@"
 }
 
 # auto map
@@ -216,7 +228,7 @@ Specifies the shell script to run on deleted items.
 
 Specifies the editor to use.
 
-Default is fetch from the `EDITOR` environment variable.
+Default is fetch from the `VISUAL` environment variable, then the `EDITOR` environment variable, and then the default chosen at compile time, which is usually `vi`.
 
 ###### `-f <command>`
 ###### `--filter=<command>`
@@ -258,6 +270,7 @@ Show version.
 
 The following environment variables have an effect on `batch`.
 
+###### VISUAL
 ###### EDITOR
 
 Configures the default text editor.
