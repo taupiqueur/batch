@@ -228,7 +228,7 @@ Specifies the shell script to run on deleted items.
 
 Specifies the editor to use.
 
-Default is fetch from the `VISUAL` environment variable, then the `EDITOR` environment variable, and then the default chosen at compile time, which is usually `vi`.
+Default is fetch from the `VISUAL` environment variable, then if unset the `EDITOR` environment variable, and then the default chosen at compile time, which is usually `vi`.
 
 ###### `-f <command>`
 ###### `--filter=<command>`
