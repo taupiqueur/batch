@@ -1,0 +1,274 @@
+.Dd March 26, 2022
+.Dt BATCH 1
+.Os
+.Sh NAME
+.Nm batch
+.Nd A tool for batch processing using your favorite text editor.
+.Sh SYNOPSIS
+.Nm
+.Op Ar switches
+.Op Fl -
+.Op Ar arguments
+.Sh DESCRIPTION
+.Nm
+is a tool that takes a list of items, lets you edit the list in your favorite text editor,
+then generates a shell script to batch process unchanged items, renamed items, and deleted items.
+You can edit the script to add your own logic for how to process each kind of item, and then run it.
+.Pp
+In addition to interactive use,
+you can supply shell script fragments to automate the editing and batch processing stages.
+.Sh USAGE
+Run the following in your terminal.
+.Pp
+.Dl $ batch *
+.Pp
+The above is equivalent to:
+.Pp
+.Dl $ ls | batch
+.Pp
+This command opens the directory contents in an external editor.
+.Pp
+Alternatively, enter
+.Nm
+in your terminal, paste the following text and hit
+.Ql Control+D .
+.Bd -literal -offset indent
+Star Platinum.png
+Magician's Red.png
+Hermit Purple.png
+Hierophant Green.png
+Silver Chariot.png
+The Fool.png
+.Ed
+.Pp
+You can also create these files with the
+.Ql batch -E -p touch
+command.
+.Pp
+After you edit and save the file, it will generate a shell script
+which does the specified actions according to the changes you did in the file.
+.Pp
+Edited file:
+.Bd -literal -offset indent
+star-platinum.png
+
+hermit-purple.png
+
+silver-chariot.png
+
+.Ed
+.Pp
+Generated shell script:
+.Bd -literal -offset indent
+# This file will be executed when you close the editor.
+# Please double-check everything, clear the file to abort.
+
+# Action on unchanged items.
+pick() {
+  echo "$1"
+}
+
+# Action on modified items.
+map() {
+  echo "$1" "$2"
+}
+map 'Star Platinum.png' 'star-platinum.png'
+map 'Hermit Purple.png' 'hermit-purple.png'
+map 'Silver Chariot.png' 'silver-chariot.png'
+
+# Action on deleted items.
+drop() {
+  echo "$1"
+}
+drop 'Magician'"'"'s Red.png'
+drop 'Hierophant Green.png'
+drop 'The Fool.png'
+.Ed
+.Pp
+This shell script is opened in an editor for you to review.
+After you close it, it will be executed.
+.Ss Editor configuration
+By default,
+.Nm
+uses whatever you’ve set as your default text editor via one of the
+.Ev VISUAL
+or
+.Ev EDITOR
+environment variables, or else falls back to the
+.Xr vi 1
+editor to process items.
+.Pp
+To change that default to something else, you can use the
+.Fl -editor
+option:
+.Pp
+.Dl $ batch -e vim
+.Pp
+Now, no matter what is set as your default shell editor,
+.Nm
+will fire up
+.Xr vim 1
+to process items.
+.Ss Advanced usage
+.Nm
+lets you apply external filters—such as
+.Xr tr 1 ,
+.Xr sed 1
+or
+.Xr awk 1 Ns
+—before invoking the editor:
+.Pp
+.Dl $ batch -f 'sed "s/ /-/g"'
+.Pp
+This option can be used to ease your editing.
+.Pp
+Combined with the
+.Fl -no-edit
+flag,
+.Nm
+can be fully automated:
+.Pp
+.Dl $ batch -f 'sed "s/ /-/g"' -E -m 'echo mv -vi --'
+.Pp
+Finally, you might want to specify a shell script for your actions:
+.Pp
+.Dl $ batch -M 'mkdir -vp -- "$(dirname -- "$2")" && mv -vi -- "$1" "$2"'
+.Pp
+This command allows you to automatically create the destination directory when renaming files.
+.Ss "In practice?"
+Depending on my situation here are the tools I use:
+.Pp
+.Bl -dash -compact
+.It
+I use
+.Xr kak 1
+to edit items and
+.Xr tr 1 /
+.Xr iconv 1
+for pre-editing.
+.It
+I use
+.Xr fd 1
+to find entries.
+.It
+I use
+.Xr nnn 1
+to select files.
+.El
+.Pp
+Since
+.Nm
+does not try to load config files from a specific folder at startup,
+the best way to emulate this is by creating an alias in your shell profile.
+.Pp
+Here is my personal configuration:
+.Bd -literal -offset indent
+# interactive map
+imap() {
+  batch -e kak -f 'iconv -f UTF-8 -t ASCII//TRANSLIT//IGNORE' -f 'tr [:upper:] [:lower:]' -f "tr -s \\'[:blank:] -" -f 'tr -d ?!,' "$@"
+}
+
+# auto map
+amap() {
+  imap -E "$@"
+}
+
+# interactive mv
+imv() {
+  imap -p : -M 'mkdir -vp -- "$(dirname -- "$2")" && mv -vi -- "$1" "$2"' -d 'rm -vi --' "$@"
+}
+
+# graphical mv
+xmv() {
+  nnn -p - | imv "$@"
+}
+.Ed
+.Sh EXAMPLES
+Process files in the current working directory.
+.Pp
+.Dl $ batch *
+.Pp
+Process files from
+.Ql argv .
+.Pp
+.Dl $ batch *.png
+.Pp
+Process files from
+.Pa stdin .
+.Pp
+.Dl $ find . -type f | batch
+.Sh OPTIONS
+.Bl -tag -width indent
+.It Fl p Ar command , Fl -pick-command Ns = Ns Ar command
+Specifies the
+.Ar command
+to run on unchanged items.
+.Pp
+Default is
+.Xr echo 1 .
+.It Fl m Ar command , Fl -map-command Ns = Ns Ar command
+Specifies the
+.Ar command
+to run on modified items.
+.Pp
+Default is
+.Xr echo 1 .
+.It Fl d Ar command , Fl -drop-command Ns = Ns Ar command
+Specifies the
+.Ar command
+to run on deleted items.
+.Pp
+Default is
+.Xr echo 1 .
+.It Fl P Ar command , Fl -pick-shell-script Ns = Ns Ar command
+Specifies the shell script to run on unchanged items.
+.It Fl M Ar command , Fl -map-shell-script Ns = Ns Ar command
+Specifies the shell script to run on modified items.
+.It Fl D Ar command , Fl -drop-shell-script Ns = Ns Ar command
+Specifies the shell script to run on deleted items.
+.It Fl e Ar command , Fl -editor Ns = Ns Ar command
+Specifies the editor to use.
+.Pp
+The order of preference is the
+.Ev VISUAL
+environment variable, then the
+.Ev EDITOR
+environment variable, and then the default chosen at compile time, which is usually
+.Xr vi 1 .
+.It Fl f Ar command , Fl -filter Ns = Ns Ar command
+Adds a filter
+.Pq repeatable .
+.It Fl E , Fl -no-edit
+Do not open editor.
+.It Fl -no-pick
+Do not pick items.
+.It Fl -no-map
+Do not map items.
+.It Fl -no-drop
+Do not drop items.
+.It Fl
+Read items from
+.Pa stdin .
+.It Fl h , Fl -help
+Show this help.
+.It Fl v , Fl -version
+Show version.
+.El
+.Sh ENVIRONMENT
+The following environment variables have an effect on
+.Nm .
+.Bl -tag -width indent
+.It Ev VISUAL , Ev EDITOR
+Configures the default text editor.
+.El
+.Sh CONTRIBUTING
+.Bl -tag -width indent
+.It Report bugs on the
+.Lk https://github.com/taupiqueur/batch/issues issue tracker ,
+.It ask questions on the
+.Lk https://web.libera.chat/gamja/#taupiqueur IRC channel ,
+.It send patches on the
+.Lk https://github.com/taupiqueur/batch/pulls mailing list .
+.El
+.Sh AUTHORS
+.An Mathieu Ablasou Aq Mt taupiqueur.kanto@gmail.com

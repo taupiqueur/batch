@@ -2,13 +2,12 @@
 
 batch is a tool for batch processing using your favorite text editor.
 
-``` sh
-batch -e vi -p : -m 'mv -vi --' -d 'rm -vi --'
-```
+The command takes a list of items, lets you edit the list in your favorite text editor,
+then generates a shell script to batch process unchanged items, renamed items, and deleted items.
+You can edit the script to add your own logic for how to process each kind of item, and then run it.
 
-See [Usage] for examples.
-
-[Usage]: docs/manual.md#usage
+In addition to interactive use,
+you can supply shell script fragments to automate the editing and batch processing stages.
 
 ## Features
 
