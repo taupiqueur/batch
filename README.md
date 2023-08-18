@@ -6,6 +6,9 @@ The command takes a list of items, lets you edit the list in your favorite text 
 then generates a shell script to batch process unchanged items, renamed items, and deleted items.
 You can edit the script to add your own logic for how to process each kind of item, and then run it.
 
+By default, the batch utility reads a list of items from standard input
+and writes unchanged items, renamed items, and deleted items to standard output.
+
 In addition to interactive use,
 you can supply shell script fragments to automate the editing and batch processing stages.
 
