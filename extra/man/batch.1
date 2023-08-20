@@ -170,7 +170,7 @@ Here is my personal configuration:
 .Bd -literal -offset indent
 # interactive map
 imap() {
-  batch -e kak -f 'iconv -f UTF-8 -t ASCII//TRANSLIT//IGNORE' -f 'tr [:upper:] [:lower:]' -f "tr -s \\'[:blank:] -" -f 'tr -d ?!,' "$@"
+  batch -e kak -f 'iconv -f UTF-8 -t ASCII//TRANSLIT//IGNORE' -f 'tr [:upper:] [:lower:]' -f "tr -s \e\e'[:blank:] -" -f 'tr -d ?!,' "$@"
 }
 
 # auto map
