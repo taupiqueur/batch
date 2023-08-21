@@ -1,0 +1,71 @@
+:root {
+  color-scheme: light dark;
+  --font-family: monospace;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --background-color: #ffffff;
+    --foreground-color: #202020;
+    --dim-foreground-color: dimgray;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background-color: #202020;
+    --foreground-color: #eaeaea;
+    --dim-foreground-color: lightgray;
+  }
+}
+
+body {
+  margin: auto;
+  max-width: 80ch;
+  background-color: var(--background-color);
+  color: var(--foreground-color);
+  font-family: var(--font-family);
+}
+
+table:is(.head, .foot) {
+  width: 100%;
+  color: var(--dim-foreground-color);
+}
+
+table:is(.head, .foot) tr {
+  display: flex;
+  justify-content: space-between;
+}
+
+.manual-text {
+  padding-inline: 4ch;
+}
+
+p {
+  text-align: justify;
+}
+
+pre {
+  white-space: pre-wrap;
+}
+
+ul {
+  list-style: "- ";
+  padding-inline-start: 2ch;
+}
+
+.Bd {
+  color: var(--dim-foreground-color);
+}
+
+.Bd-indent {
+  padding-inline-start: 4ch;
+}
+
+.Ar, .Em, .Pa {
+  font-style: italic;
+}
+
+.Ev, .Fl, .Nm, .Ql, .Sy, .Xr {
+  font-weight: bold;
+}

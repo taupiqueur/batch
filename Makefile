@@ -13,6 +13,7 @@ endif
 build:
 	shards build --release $(flags)
 	gzip -9 -f -k extra/man/batch.1
+	mandoc -I os="Unix" -T html -O style="man-style.css",man="https://man.archlinux.org/man/%N.%S" extra/man/batch.1 > extra/man/batch.1.html
 
 test:
 	crystal spec

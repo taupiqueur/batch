@@ -24,12 +24,14 @@ In addition to interactive use,
 you can supply shell script fragments to automate the editing and batch processing stages.
 .Sh USAGE
 Run the following in your terminal.
-.Pp
-.Dl $ batch *
+.Bd -literal -offset indent
+batch *
+.Ed
 .Pp
 The above is equivalent to:
-.Pp
-.Dl $ ls | batch
+.Bd -literal -offset indent
+ls | batch
+.Ed
 .Pp
 This command opens the directory contents in an external editor.
 .Pp
@@ -106,8 +108,9 @@ editor to process items.
 To change that default to something else, you can use the
 .Fl -editor
 option:
-.Pp
-.Dl $ batch -e vim
+.Bd -literal -offset indent
+batch -e vim
+.Ed
 .Pp
 Now, no matter what is set as your default shell editor,
 .Nm
@@ -122,8 +125,9 @@ lets you apply external filters—such as
 or
 .Xr awk 1 Ns
 —before invoking the editor:
-.Pp
-.Dl $ batch -f 'sed "s/ /-/g"'
+.Bd -literal -offset indent
+batch -f 'sed "s/ /-/g"'
+.Ed
 .Pp
 This option can be used to ease your editing.
 .Pp
@@ -132,12 +136,14 @@ Combined with the
 flag,
 .Nm
 can be fully automated:
-.Pp
-.Dl $ batch -f 'sed "s/ /-/g"' -E -m 'echo mv -vi --'
+.Bd -literal -offset indent
+batch -f 'sed "s/ /-/g"' -E -m 'echo mv -vi --'
+.Ed
 .Pp
 Finally, you might want to specify a shell script for your actions:
-.Pp
-.Dl $ batch -M 'mkdir -vp -- "$(dirname -- "$2")" && mv -vi -- "$1" "$2"'
+.Bd -literal -offset indent
+batch -M 'mkdir -vp -- "$(dirname -- "$2")" && mv -vi -- "$1" "$2"'
+.Ed
 .Pp
 This command allows you to automatically create the destination directory when renaming files.
 .Ss "In practice?"
@@ -190,18 +196,21 @@ xmv() {
 .Ed
 .Sh EXAMPLES
 Process files in the current working directory.
-.Pp
-.Dl $ batch *
+.Bd -literal -offset indent
+batch *
+.Ed
 .Pp
 Process files from
 .Ql argv .
-.Pp
-.Dl $ batch *.png
+.Bd -literal -offset indent
+batch *.png
+.Ed
 .Pp
 Process files from
 .Pa stdin .
-.Pp
-.Dl $ find . -type f | batch
+.Bd -literal -offset indent
+find . -type f | batch
+.Ed
 .Sh OPTIONS
 The options are as follows:
 .Bl -tag -width indent
