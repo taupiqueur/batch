@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="man-style.css" type="text/css" media="all"/>
+  <title>BATCH(1)</title>
+</head>
+<body>
+<table class="head">
+  <tr>
+    <td class="head-ltitle">BATCH(1)</td>
+    <td class="head-vol">General Commands Manual</td>
+    <td class="head-rtitle">BATCH(1)</td>
+  </tr>
+</table>
+<div class="manual-text">
+<section class="Sh">
+<h1 class="Sh" id="NAME"><a class="permalink" href="#NAME">NAME</a></h1>
+<p class="Pp"><code class="Nm">batch</code> &#x2014; <span class="Nd">A tool for
+    batch processing using your favorite text editor.</span></p>
+</section>
+<section class="Sh">
+<h1 class="Sh" id="SYNOPSIS"><a class="permalink" href="#SYNOPSIS">SYNOPSIS</a></h1>
+<table class="Nm">
+  <tr>
+    <td><code class="Nm">batch</code></td>
+    <td>[<var class="Ar">switches</var>] [<code class="Fl">--</code>]
+      [<var class="Ar">arguments</var>]</td>
+  </tr>
+</table>
+</section>
+<section class="Sh">
+<h1 class="Sh" id="DESCRIPTION"><a class="permalink" href="#DESCRIPTION">DESCRIPTION</a></h1>
+<p class="Pp"><code class="Nm">batch</code> is a tool that takes a list of
+    items, lets you edit the list in your favorite text editor, then generates a
+    shell script to batch process unchanged items, renamed items, and deleted
+    items. You can edit the script to add your own logic for how to process each
+    kind of item, and then run it.</p>
+<p class="Pp">By default, the <code class="Nm">batch</code> utility reads a list
+    of items from standard input and writes unchanged items, renamed items, and
+    deleted items to standard output.</p>
+<p class="Pp">In addition to interactive use, you can supply shell script
+    fragments to automate the editing and batch processing stages.</p>
+</section>
+<section class="Sh">
+<h1 class="Sh" id="USAGE"><a class="permalink" href="#USAGE">USAGE</a></h1>
+<p class="Pp">Run the following in your terminal.</p>
+<div class="Bd Pp Bd-indent Li">
+<pre>batch *</pre>
+</div>
+<p class="Pp">The above is equivalent to:</p>
+<div class="Bd Pp Bd-indent Li">
+<pre>ls | batch</pre>
+</div>
+<p class="Pp">This command opens the directory contents in an external
+  editor.</p>
+<p class="Pp">Alternatively, enter <code class="Nm">batch</code> in your
+    terminal, paste the following text and hit
+    &#x2018;<code class="Li">Control+D</code>&#x2019;.</p>
+<div class="Bd Pp Bd-indent Li">
+<pre>Star Platinum.png
+Magician's Red.png
+Hermit Purple.png
+Hierophant Green.png
+Silver Chariot.png
+The Fool.png</pre>
+</div>
+<p class="Pp">You can also create these files with the
+    &#x2018;<code class="Li">batch -E -p touch</code>&#x2019; command.</p>
+<p class="Pp">After you edit and save the file, it will generate a shell script
+    which does the specified actions according to the changes you did in the
+    file.</p>
+<p class="Pp">Edited file:</p>
+<div class="Bd Pp Bd-indent Li">
+<pre>star-platinum.png
+
+hermit-purple.png
+
+silver-chariot.png
+
+</pre>
+</div>
+<p class="Pp">Generated shell script:</p>
+<div class="Bd Pp Bd-indent Li">
+<pre># This file will be executed when you close the editor.
+# Please double-check everything, clear the file to abort.
+
+# Action on unchanged items.
+pick() {
+  echo &quot;$1&quot;
+}
+
+# Action on modified items.
+map() {
+  echo &quot;$1&quot; &quot;$2&quot;
+}
+map 'Star Platinum.png' 'star-platinum.png'
+map 'Hermit Purple.png' 'hermit-purple.png'
+map 'Silver Chariot.png' 'silver-chariot.png'
+
+# Action on deleted items.
+drop() {
+  echo &quot;$1&quot;
+}
+drop 'Magician'&quot;'&quot;'s Red.png'
+drop 'Hierophant Green.png'
+drop 'The Fool.png'</pre>
+</div>
+<p class="Pp">This shell script is opened in an editor for you to review. After
+    you close it, it will be executed.</p>
+<section class="Ss">
+<h2 class="Ss" id="Editor_configuration"><a class="permalink" href="#Editor_configuration">Editor
+  configuration</a></h2>
+<p class="Pp">By default, <code class="Nm">batch</code> uses whatever
+    you&#x2019;ve set as your default text editor via one of the
+    <code class="Ev">VISUAL</code> or <code class="Ev">EDITOR</code> environment
+    variables, or else falls back to the
+    <a class="Xr" href="https://man.archlinux.org/man/vi.1">vi(1)</a> editor to
+    process items.</p>
+<p class="Pp">To change that default to something else, you can use the
+    <code class="Fl">--editor</code> option:</p>
+<div class="Bd Pp Bd-indent Li">
+<pre>batch -e vim</pre>
+</div>
+<p class="Pp">Now, no matter what is set as your default shell editor,
+    <code class="Nm">batch</code> will fire up
+    <a class="Xr" href="https://man.archlinux.org/man/vim.1">vim(1)</a> to
+    process items.</p>
+</section>
+<section class="Ss">
+<h2 class="Ss" id="Advanced_usage"><a class="permalink" href="#Advanced_usage">Advanced
+  usage</a></h2>
+<p class="Pp"><code class="Nm">batch</code> lets you apply external
+    filters&#x2014;such as
+    <a class="Xr" href="https://man.archlinux.org/man/tr.1">tr(1)</a>,
+    <a class="Xr" href="https://man.archlinux.org/man/sed.1">sed(1)</a> or
+    <a class="Xr" href="https://man.archlinux.org/man/awk.1">awk(1)</a>&#x2014;before
+    invoking the editor:</p>
+<div class="Bd Pp Bd-indent Li">
+<pre>batch -f 'sed &quot;s/ /-/g&quot;'</pre>
+</div>
+<p class="Pp">This option can be used to ease your editing.</p>
+<p class="Pp">Combined with the <code class="Fl">--no-edit</code> flag,
+    <code class="Nm">batch</code> can be fully automated:</p>
+<div class="Bd Pp Bd-indent Li">
+<pre>batch -f 'sed &quot;s/ /-/g&quot;' -E -m 'echo mv -vi --'</pre>
+</div>
+<p class="Pp">Finally, you might want to specify a shell script for your
+    actions:</p>
+<div class="Bd Pp Bd-indent Li">
+<pre>batch -M 'mkdir -vp -- &quot;$(dirname -- &quot;$2&quot;)&quot; &amp;&amp; mv -vi -- &quot;$1&quot; &quot;$2&quot;'</pre>
+</div>
+<p class="Pp">This command allows you to automatically create the destination
+    directory when renaming files.</p>
+</section>
+<section class="Ss">
+<h2 class="Ss" id="In_practice?"><a class="permalink" href="#In_practice?">In
+  practice?</a></h2>
+<p class="Pp">Depending on my situation here are the tools I use:</p>
+<p class="Pp"></p>
+<ul class="Bl-dash Bl-compact">
+  <li>I use <a class="Xr" href="https://man.archlinux.org/man/kak.1">kak(1)</a>
+      to edit items and
+      <a class="Xr" href="https://man.archlinux.org/man/tr.1">tr(1)</a> /
+      <a class="Xr" href="https://man.archlinux.org/man/iconv.1">iconv(1)</a>
+      for pre-editing.</li>
+  <li>I use <a class="Xr" href="https://man.archlinux.org/man/fd.1">fd(1)</a> to
+      find entries.</li>
+  <li>I use <a class="Xr" href="https://man.archlinux.org/man/nnn.1">nnn(1)</a>
+      to select files.</li>
+</ul>
+<p class="Pp">Since <code class="Nm">batch</code> does not try to load config
+    files from a specific folder at startup, the best way to emulate this is by
+    creating an alias in your shell profile.</p>
+<p class="Pp">Here is my personal configuration:</p>
+<div class="Bd Pp Bd-indent Li">
+<pre># interactive map
+imap() {
+  batch -e kak -f 'iconv -f UTF-8 -t ASCII//TRANSLIT//IGNORE' -f 'tr [:upper:] [:lower:]' -f &quot;tr -s \\'[:blank:] -&quot; -f 'tr -d ?!,' &quot;$@&quot;
+}
+
+# auto map
+amap() {
+  imap -E &quot;$@&quot;
+}
+
+# interactive mv
+imv() {
+  imap -p : -M 'mkdir -vp -- &quot;$(dirname -- &quot;$2&quot;)&quot; &amp;&amp; mv -vi -- &quot;$1&quot; &quot;$2&quot;' -d 'rm -vi --' &quot;$@&quot;
+}
+
+# graphical mv
+xmv() {
+  nnn -p - | imv &quot;$@&quot;
+}</pre>
+</div>
+</section>
+</section>
+<section class="Sh">
+<h1 class="Sh" id="EXAMPLES"><a class="permalink" href="#EXAMPLES">EXAMPLES</a></h1>
+<p class="Pp">Process files in the current working directory.</p>
+<div class="Bd Pp Bd-indent Li">
+<pre>batch *</pre>
+</div>
+<p class="Pp">Process files from
+  &#x2018;<code class="Li">argv</code>&#x2019;.</p>
+<div class="Bd Pp Bd-indent Li">
+<pre>batch *.png</pre>
+</div>
+<p class="Pp">Process files from <span class="Pa">stdin</span>.</p>
+<div class="Bd Pp Bd-indent Li">
+<pre>find . -type f | batch</pre>
+</div>
+</section>
+<section class="Sh">
+<h1 class="Sh" id="OPTIONS"><a class="permalink" href="#OPTIONS">OPTIONS</a></h1>
+<p class="Pp">The options are as follows:</p>
+<dl class="Bl-tag">
+  <dt id="p"><a class="permalink" href="#p"><code class="Fl">-p</code></a>
+    <var class="Ar">command</var>,
+    <code class="Fl">--pick-command</code>=<var class="Ar">command</var></dt>
+  <dd>Specifies the <var class="Ar">command</var> to run on unchanged items.
+    <p class="Pp">Default is
+        <a class="Xr" href="https://man.archlinux.org/man/echo.1">echo(1)</a>.</p>
+  </dd>
+  <dt id="m"><a class="permalink" href="#m"><code class="Fl">-m</code></a>
+    <var class="Ar">command</var>,
+    <code class="Fl">--map-command</code>=<var class="Ar">command</var></dt>
+  <dd>Specifies the <var class="Ar">command</var> to run on modified items.
+    <p class="Pp">Default is
+        <a class="Xr" href="https://man.archlinux.org/man/echo.1">echo(1)</a>.</p>
+  </dd>
+  <dt id="d"><a class="permalink" href="#d"><code class="Fl">-d</code></a>
+    <var class="Ar">command</var>,
+    <code class="Fl">--drop-command</code>=<var class="Ar">command</var></dt>
+  <dd>Specifies the <var class="Ar">command</var> to run on deleted items.
+    <p class="Pp">Default is
+        <a class="Xr" href="https://man.archlinux.org/man/echo.1">echo(1)</a>.</p>
+  </dd>
+  <dt id="P"><a class="permalink" href="#P"><code class="Fl">-P</code></a>
+    <var class="Ar">command</var>,
+    <code class="Fl">--pick-shell-script</code>=<var class="Ar">command</var></dt>
+  <dd>Specifies the shell script to run on unchanged items.</dd>
+  <dt id="M"><a class="permalink" href="#M"><code class="Fl">-M</code></a>
+    <var class="Ar">command</var>,
+    <code class="Fl">--map-shell-script</code>=<var class="Ar">command</var></dt>
+  <dd>Specifies the shell script to run on modified items.</dd>
+  <dt id="D"><a class="permalink" href="#D"><code class="Fl">-D</code></a>
+    <var class="Ar">command</var>,
+    <code class="Fl">--drop-shell-script</code>=<var class="Ar">command</var></dt>
+  <dd>Specifies the shell script to run on deleted items.</dd>
+  <dt id="e"><a class="permalink" href="#e"><code class="Fl">-e</code></a>
+    <var class="Ar">command</var>,
+    <code class="Fl">--editor</code>=<var class="Ar">command</var></dt>
+  <dd>Specifies the editor to use.
+    <p class="Pp">The order of preference is the <code class="Ev">VISUAL</code>
+        environment variable, then the <code class="Ev">EDITOR</code>
+        environment variable, and then the default chosen at compile time, which
+        is usually
+        <a class="Xr" href="https://man.archlinux.org/man/vi.1">vi(1)</a>.</p>
+  </dd>
+  <dt id="f"><a class="permalink" href="#f"><code class="Fl">-f</code></a>
+    <var class="Ar">command</var>,
+    <code class="Fl">--filter</code>=<var class="Ar">command</var></dt>
+  <dd>Adds a filter (repeatable).</dd>
+  <dt id="E"><a class="permalink" href="#E"><code class="Fl">-E</code></a>,
+    <code class="Fl">--no-edit</code></dt>
+  <dd>Do not open editor.</dd>
+  <dt id="no-pick"><a class="permalink" href="#no-pick"><code class="Fl">--no-pick</code></a></dt>
+  <dd>Do not pick items.</dd>
+  <dt id="no-map"><a class="permalink" href="#no-map"><code class="Fl">--no-map</code></a></dt>
+  <dd>Do not map items.</dd>
+  <dt id="no-drop"><a class="permalink" href="#no-drop"><code class="Fl">--no-drop</code></a></dt>
+  <dd>Do not drop items.</dd>
+  <dt><code class="Fl">-</code></dt>
+  <dd>Read items from <span class="Pa">stdin</span>.</dd>
+  <dt id="h"><a class="permalink" href="#h"><code class="Fl">-h</code></a>,
+    <code class="Fl">--help</code></dt>
+  <dd>Show this help.</dd>
+  <dt id="v"><a class="permalink" href="#v"><code class="Fl">-v</code></a>,
+    <code class="Fl">--version</code></dt>
+  <dd>Show version.</dd>
+</dl>
+</section>
+<section class="Sh">
+<h1 class="Sh" id="ENVIRONMENT"><a class="permalink" href="#ENVIRONMENT">ENVIRONMENT</a></h1>
+<p class="Pp">The following environment variables have an effect on
+    <code class="Nm">batch</code>.</p>
+<dl class="Bl-tag">
+  <dt id="VISUAL"><a class="permalink" href="#VISUAL"><code class="Ev">VISUAL</code></a>,
+    <code class="Ev">EDITOR</code></dt>
+  <dd>Configures the default text editor.</dd>
+</dl>
+</section>
+<section class="Sh">
+<h1 class="Sh" id="CONTRIBUTING"><a class="permalink" href="#CONTRIBUTING">CONTRIBUTING</a></h1>
+<dl class="Bl-tag">
+  <dt>Report bugs on the</dt>
+  <dd><a class="Lk" href="https://github.com/taupiqueur/batch/issues">issue
+      tracker</a>,</dd>
+  <dt>ask questions on the</dt>
+  <dd><a class="Lk" href="https://web.libera.chat/gamja/#taupiqueur">IRC
+      channel</a>,</dd>
+  <dt>send patches on the</dt>
+  <dd><a class="Lk" href="https://github.com/taupiqueur/batch/pulls">mailing
+      list</a>.</dd>
+</dl>
+</section>
+<section class="Sh">
+<h1 class="Sh" id="AUTHORS"><a class="permalink" href="#AUTHORS">AUTHORS</a></h1>
+<p class="Pp"><span class="An">Mathieu Ablasou</span>
+    &lt;<a class="Mt" href="mailto:taupiqueur.kanto@gmail.com">taupiqueur.kanto@gmail.com</a>&gt;</p>
+</section>
+</div>
+<table class="foot">
+  <tr>
+    <td class="foot-date">March 26, 2022</td>
+    <td class="foot-os">Unix</td>
+  </tr>
+</table>
+</body>
+</html>
