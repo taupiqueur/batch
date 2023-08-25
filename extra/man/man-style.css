@@ -1,6 +1,5 @@
 :root {
   color-scheme: light dark;
-  --font-family: monospace;
 }
 
 @media (prefers-color-scheme: light) {
@@ -24,7 +23,8 @@ body {
   max-width: 80ch;
   background-color: var(--background-color);
   color: var(--foreground-color);
-  font-family: var(--font-family);
+  font-family: monospace;
+  font-size: 14px;
 }
 
 table:is(.head, .foot) {
@@ -54,6 +54,10 @@ ul {
   padding-inline-start: 2ch;
 }
 
+dd {
+  margin-block-end: 2ex;
+}
+
 .Bd {
   color: var(--dim-foreground-color);
 }
@@ -62,10 +66,10 @@ ul {
   padding-inline-start: 4ch;
 }
 
-.Ar, .Em, .Pa {
+.Ar, .Pa {
   font-style: italic;
 }
 
-.Ev, .Fl, .Nm, .Ql, .Sy, .Xr {
+.Ev, .Fl, .Nm, .Xr {
   font-weight: bold;
 }
