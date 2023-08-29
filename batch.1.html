@@ -175,19 +175,9 @@ drop 'The Fool.png'</pre>
     creating an alias in your shell profile.</p>
 <p class="Pp">Here is my personal configuration:</p>
 <div class="Bd Pp Bd-indent Li">
-<pre># interactive map
-imap() {
-  batch -e kak -f 'iconv -f UTF-8 -t ASCII//TRANSLIT//IGNORE' -f 'tr [:upper:] [:lower:]' -f &quot;tr -s \\'[:blank:] -&quot; -f 'tr -d ?!,' &quot;$@&quot;
-}
-
-# auto map
-amap() {
-  imap -E &quot;$@&quot;
-}
-
-# interactive mv
+<pre># interactive mv
 imv() {
-  imap -p : -M 'mkdir -vp -- &quot;$(dirname -- &quot;$2&quot;)&quot; &amp;&amp; mv -vi -- &quot;$1&quot; &quot;$2&quot;' -d 'rm -vi --' &quot;$@&quot;
+  batch -e 'kak' -f 'iconv -f &quot;UTF-8&quot; -t &quot;ASCII//TRANSLIT//IGNORE&quot;' -f 'tr &quot;A-Z&quot; &quot;a-z&quot;' -f 'tr -s &quot; '&quot;'&quot;'&quot; &quot;-&quot;' -f 'tr -d &quot;!,?&quot;' -p ':' -M 'mkdir -vp -- &quot;$(dirname -- &quot;$2&quot;)&quot; &amp;&amp; mv -vi -- &quot;$1&quot; &quot;$2&quot;' -d 'rm -vi --' &quot;$@&quot;
 }
 
 # graphical mv
@@ -316,7 +306,7 @@ xmv() {
 <table class="foot">
   <tr>
     <td class="foot-date">March 26, 2022</td>
-    <td class="foot-os">Unix</td>
+    <td class="foot-os"></td>
   </tr>
 </table>
 </body>
