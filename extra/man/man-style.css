@@ -70,6 +70,6 @@ dd {
   font-style: italic;
 }
 
-.Ev, .Fl, .Nm, .Xr {
+.Cm, .Ev, .Fl, .Ic, .Nm, .Xr {
   font-weight: bold;
 }
