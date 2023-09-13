@@ -257,7 +257,7 @@ Read items from **stdin**.
 
 Show this help.
 
-###### `-v`
+###### `-V`
 ###### `--version`
 
 Show version.

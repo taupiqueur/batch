@@ -26,7 +26,7 @@ _batch() {
     "- "
     "-h "
     "--help "
-    "-v "
+    "-V "
     "--version "
   )
   COMPREPLY=(
