@@ -1,7 +1,7 @@
 _batch() {
   local IFS='
 '
-  local WORDLIST=(
+  local OPTION_WORDLIST=(
     "-p "
     "--pick-command="
     "-m "
@@ -57,7 +57,7 @@ _batch() {
           compgen -A command -- "$2"
           ;;
         *,-*)
-          compgen -W "${WORDLIST[*]}" -- "$2"
+          compgen -W "${OPTION_WORDLIST[*]}" -- "$2"
           ;;
       esac
     )
