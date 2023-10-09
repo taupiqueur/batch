@@ -50,6 +50,12 @@ See the [manual] for setup and usage instructions.
 
 [Manual]: docs/manual.md
 
+batch is also documented via man pages.
+For a list of available man pages,
+refer to `man -k batch` or [batch(1)].
+
+[batch(1)]: https://taupiqueur.github.io/batch/batch.1.html
+
 ## Contributing
 
 Report bugs on the [issue tracker],
