@@ -6,6 +6,7 @@ in
     packages = [
       pkgs.crystal
       pkgs.shards
+      pkgs.llvm
       pkgs.git
       pkgs.mandoc
     ];
