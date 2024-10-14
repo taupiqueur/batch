@@ -1,3 +1,5 @@
+PREFIX ?= $(HOME)/.local
+
 # General options
 name = batch
 version = $(shell git describe --tags --always)
@@ -23,15 +25,15 @@ release: clean build
 	tar caf releases/$(name)-$(version)-$(target).tar.xz bin/batch extra/man/batch.1.gz extra/shell-completion/batch.bash extra/shell-completion/batch.zsh extra/shell-completion/batch.fish
 
 install: build
-	install -d ~/.local/bin ~/.local/share/man/man1 ~/.local/share/bash-completion/completions ~/.local/share/zsh/site-functions ~/.local/share/fish/vendor_completions.d
-	install -m 0755 bin/batch ~/.local/bin
-	install -m 0644 extra/man/batch.1.gz ~/.local/share/man/man1
-	install -m 0644 extra/shell-completion/batch.bash ~/.local/share/bash-completion/completions
-	install -m 0644 extra/shell-completion/batch.zsh ~/.local/share/zsh/site-functions/_batch
-	install -m 0644 extra/shell-completion/batch.fish ~/.local/share/fish/vendor_completions.d
+	install -d $(DESTDIR)$(PREFIX)/bin $(DESTDIR)$(PREFIX)/share/man/man1 $(DESTDIR)$(PREFIX)/share/bash-completion/completions $(DESTDIR)$(PREFIX)/share/zsh/site-functions $(DESTDIR)$(PREFIX)/share/fish/vendor_completions.d
+	install -m 0755 bin/batch $(DESTDIR)$(PREFIX)/bin
+	install -m 0644 extra/man/batch.1.gz $(DESTDIR)$(PREFIX)/share/man/man1
+	install -m 0644 extra/shell-completion/batch.bash $(DESTDIR)$(PREFIX)/share/bash-completion/completions
+	install -m 0644 extra/shell-completion/batch.zsh $(DESTDIR)$(PREFIX)/share/zsh/site-functions/_batch
+	install -m 0644 extra/shell-completion/batch.fish $(DESTDIR)$(PREFIX)/share/fish/vendor_completions.d
 
 uninstall:
-	rm -f ~/.local/bin/batch ~/.local/share/man/man1/batch.1.gz ~/.local/share/bash-completion/completions/batch.bash ~/.local/share/zsh/site-functions/_batch ~/.local/share/fish/vendor_completions.d/batch.fish
+	rm -f $(DESTDIR)$(PREFIX)/bin/batch $(DESTDIR)$(PREFIX)/share/man/man1/batch.1.gz $(DESTDIR)$(PREFIX)/share/bash-completion/completions/batch.bash $(DESTDIR)$(PREFIX)/share/zsh/site-functions/_batch $(DESTDIR)$(PREFIX)/share/fish/vendor_completions.d/batch.fish
 
 clean:
 	git clean -d -f -X
