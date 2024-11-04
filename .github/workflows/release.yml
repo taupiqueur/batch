@@ -2,11 +2,8 @@ name: Release CI
 
 on: [push, pull_request]
 
-env:
-  GH_TOKEN: ${{ github.token }}
-
 jobs:
-  release:
+  create_release:
     name: Create release
     runs-on: ubuntu-latest
     steps:
@@ -15,34 +12,83 @@ jobs:
 
       - name: Create release
         run: |
-          # Create tag: nightly
-          git tag --force nightly
-          git push --force origin nightly
+          git tag -f nightly
+          git push -f origin nightly
+          gh release delete nightly -y || :
+          gh release create nightly -t 'Nightly builds' -F CHANGELOG.md -p
+        env:
+          GH_TOKEN: ${{ github.token }}
 
-          # Create release: nightly
-          gh release delete nightly --yes || true
-          gh release create nightly --title 'Nightly builds' --notes-file CHANGELOG.md --prerelease
+  create_x86_64_unknown_linux_musl:
+    name: Create batch-nightly-x86_64-unknown-linux-musl.tar.xz
+    needs: create_release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-  build:
-    name: Build release
-    needs: release
-    strategy:
-      fail-fast: false # don’t fail other jobs if one fails
-      matrix:
-        include:
-          - target: x86_64-unknown-linux-musl
-            os: ubuntu-latest
-            archive: batch-nightly-x86_64-unknown-linux-musl.tar.xz
+      - name: Build Docker image
+        run: docker build -t batch .
 
-          - target: x86_64-apple-darwin
-            os: macos-latest
-            archive: batch-nightly-x86_64-apple-darwin.tar.xz
+      - name: Build release
+        run: docker run -v .:/app -w /app batch make static=yes release name=batch version=nightly target=x86_64-unknown-linux-musl
 
-          - target: x86_64-pc-windows-msvc
-            os: windows-latest
-            archive: batch-nightly-x86_64-pc-windows-msvc.zip
+      - name: Run tests
+        run: docker run -v .:/app -w /app batch make test
 
-    runs-on: ${{ matrix.os }}
+      - name: Upload artifact
+        run: gh release upload nightly releases/batch-nightly-x86_64-unknown-linux-musl.tar.xz
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+  create_aarch64_apple_darwin:
+    name: Create batch-nightly-aarch64-apple-darwin.tar.xz
+    needs: create_release
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install packages
+        run: brew install crystal
+
+      - name: Build release
+        run: make release name=batch version=nightly target=aarch64-apple-darwin
+
+      - name: Run tests
+        run: make test
+
+      - name: Upload artifact
+        run: gh release upload nightly releases/batch-nightly-aarch64-apple-darwin.tar.xz
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+  create_x86_64_apple_darwin:
+    name: Create batch-nightly-x86_64-apple-darwin.tar.xz
+    needs: create_release
+    runs-on: macos-13
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install packages
+        run: brew install crystal
+
+      - name: Build release
+        run: make release name=batch version=nightly target=x86_64-apple-darwin
+
+      - name: Run tests
+        run: make test
+
+      - name: Upload artifact
+        run: gh release upload nightly releases/batch-nightly-x86_64-apple-darwin.tar.xz
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+  create_x86_64_pc_windows_msvc:
+    name: Create batch-nightly-x86_64-pc-windows-msvc.zip
+    needs: create_release
+    runs-on: windows-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -50,32 +96,12 @@ jobs:
       - name: Install Crystal
         uses: crystal-lang/install-crystal@v1
 
-      # - name: Install packages (Linux)
-        # if: matrix.os == 'ubuntu-latest'
-        # run: sudo apt install -y crystal
-        # run: sudo snap install crystal --classic
-
-      # - name: Install packages (macOS)
-        # if: matrix.os == 'macos-latest'
-        # run: brew install crystal
-
-      # - name: Install packages (Windows)
-        # if: matrix.os == 'windows-latest'
-        # run: choco install crystal
-
-      - name: Build release (Linux)
-        if: matrix.os == 'ubuntu-latest'
-        run: sh scripts/docker-run.sh make static=yes release name=batch version=nightly target=${{ matrix.target }}
-
-      - name: Build release (macOS)
-        if: matrix.os == 'macos-latest'
-        run: make release name=batch version=nightly target=${{ matrix.target }}
-
-      - name: Build release (Windows)
-        if: matrix.os == 'windows-latest'
+      - name: Build release
         run: |
           shards build --release
-          7z a releases/${{ matrix.archive }} bin/batch.exe
+          7z a releases/batch-nightly-x86_64-pc-windows-msvc.zip bin/batch.exe
 
-      - name: Upload release
-        run: gh release upload nightly releases/${{ matrix.archive }}
+      - name: Upload artifact
+        run: gh release upload nightly releases/batch-nightly-x86_64-pc-windows-msvc.zip
+        env:
+          GH_TOKEN: ${{ github.token }}

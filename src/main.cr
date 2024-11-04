@@ -76,7 +76,9 @@ end
 # This is the default when no items have been specified from the command-line.
 if read_stdin || input_items.empty?
   input_items.concat(STDIN.gets_to_end.lines)
-  STDIN.reopen(File.new("/dev/tty"))
+  if STDOUT.tty?
+    STDIN.reopen(File.new("/dev/tty"))
+  end
 end
 
 # Something to do?
