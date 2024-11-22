@@ -4,7 +4,7 @@ require "ecr/macros"
 require "./env"
 require "./command"
 
-VERSION = {{ `git describe --tags --always`.chomp.stringify }}
+VERSION = "0.1.0"
 
 pick_command = Command.new("echo")
 map_command = Command.new("echo")
