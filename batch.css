@@ -39,4 +39,5 @@ nav ul {
   align-items: center;
   justify-content: space-around;
   list-style: none;
+  padding: 0;
 }
