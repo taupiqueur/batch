@@ -49,8 +49,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install packages
-        run: brew install crystal
+      - name: Install Crystal
+        uses: crystal-lang/install-crystal@v1
 
       - name: Build release
         run: make release name=batch version=nightly target=aarch64-apple-darwin
