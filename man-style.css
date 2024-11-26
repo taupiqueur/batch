@@ -46,7 +46,8 @@ p {
 }
 
 pre {
-  white-space: pre-wrap;
+  text-wrap: wrap;
+  overflow-wrap: break-word;
 }
 
 ul {
