@@ -20,6 +20,7 @@
 
 body {
   margin: auto;
+  padding: 0 0.5rem;
   max-width: 80ch;
   background-color: var(--background-color);
   color: var(--foreground-color);
