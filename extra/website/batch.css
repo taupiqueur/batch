@@ -6,6 +6,8 @@
   :root {
     --background-color: #ffffff;
     --foreground-color: #202020;
+    --tag-pill-background-color: #e8f0fe66;
+    --tag-pill-text-color: #174ea6;
   }
 }
 
@@ -13,12 +15,24 @@
   :root {
     --background-color: #202020;
     --foreground-color: #eaeaea;
+    --tag-pill-background-color: #2d333b;
+    --tag-pill-text-color: #c5d1de;
+  }
+}
+
+@media (max-width: 800px) {
+  figure {
+    margin-inline: 0;
+  }
+
+  nav ul {
+    font-size: 0.9em;
   }
 }
 
 body {
   margin: auto;
-  padding: 0 0.5rem;
+  padding: 0.5rem;
   max-width: 800px;
   background-color: var(--background-color);
   color: var(--foreground-color);
@@ -29,6 +43,20 @@ body {
 
 main {
   margin-block: 2rem;
+  overflow-wrap: anywhere;
+}
+
+main figure {
+  margin-block: 2.5rem;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+}
+
+header h1 {
+  margin: 0;
 }
 
 nav {
@@ -37,8 +65,62 @@ nav {
 
 nav ul {
   display: flex;
-  align-items: center;
-  justify-content: space-around;
   list-style: none;
   padding: 0;
+  gap: 0 5%;
+  flex-wrap: wrap;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+time {
+  font-size: 0.9em;
+  padding: 0.1em 0.2em;
+  border-radius: 0.3em;
+  background-color: var(--tag-pill-background-color);
+}
+
+figure {
+  text-align: center;
+}
+
+figure img {
+  max-width: 100%;
+}
+
+figcaption {
+  text-align: center;
+  font-style: italic;
+}
+
+ul.languages {
+  display: flex;
+  list-style: none;
+  gap: 0;
+  flex-wrap: wrap;
+}
+
+ul.languages li + li::before {
+  content: ",";
+}
+
+ul.actions {
+  display: flex;
+  align-items: center;
+  justify-content: normal;
+  list-style: none;
+  margin-block: 2rem;
+  padding: 0;
+  gap: 1rem;
+}
+
+ul.actions li a {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  border-radius: 0.3rem;
+  background-color: var(--tag-pill-background-color);
+  color: var(--tag-pill-text-color);
 }
