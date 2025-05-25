@@ -25,6 +25,10 @@
     margin-inline: 0;
   }
 
+  header h1 {
+    font-size: 1.9em;
+  }
+
   nav ul {
     font-size: 0.9em;
   }
@@ -67,7 +71,7 @@ nav ul {
   display: flex;
   list-style: none;
   padding: 0;
-  gap: 0 5%;
+  gap: 0 2ch;
   flex-wrap: wrap;
 }
 
@@ -99,18 +103,12 @@ figcaption {
 ul.languages {
   display: flex;
   list-style: none;
-  gap: 0;
+  gap: 0 1ch;
   flex-wrap: wrap;
-}
-
-ul.languages li + li::before {
-  content: ",";
 }
 
 ul.actions {
   display: flex;
-  align-items: center;
-  justify-content: normal;
   list-style: none;
   margin-block: 2rem;
   padding: 0;
