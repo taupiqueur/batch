@@ -1,5 +1,7 @@
+use path
+
 fn complete-external-commands { |arg|
-  find -L $@paths -maxdepth 1 -type f -perm "-a=x" -name $arg"*" -exec basename -a -- "{}" + 2> /dev/null |
+  find -L -- (each $path:abs~ $paths) -maxdepth 1 -type f -perm "-a=x" -name $arg"*" -exec basename -a -- "{}" + 2> /dev/null |
   sort -u
 }
 
